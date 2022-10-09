@@ -12,6 +12,9 @@ const db = mysql.createConnection({
     console.log('Connected to employee_tracker database.')
 );
 
+function init() {
+    initialQuestions();
+};
 
 // Initial questions to prompt all options
 function initialQuestions() {
@@ -65,17 +68,134 @@ function viewEmployees() {
         }
     })
     
-}
+};
+
+// Arrays for current data
+const employeeRoles = [
+    'Sales Lead',
+    'Salesperson',
+    'Lead Engineer',
+    'Software Engineer',
+    'Account Manager',
+    'Accountant',
+    'Legal Team Lead',
+];
+
+const employeeDepartments = [
+    'Engineering',
+    'Finance',
+    'Legal',
+    'Sales',
+];
+
+const allCurrentEmployees = [
+    'John Doe',
+    'Ashley Rodriquez',
+    'Kunal Singh',
+    'Sarah Lourd',
+    'Mike Chan',
+    'Kevin Tupik',
+    'Malia, Brown',
+    'Johnny Flicker',
+];
+
+const currentManagers = [
+    'None',
+    'John Doe',
+    'Ashley Rodriquez',
+    'Kunal Singh',
+    'Sarah Lourd',
+];
+
+// Prompts to add data to the current data
+const addNewEmployeePrompts = [
+    { 
+        type: "input",
+        message: "What is the employee's first name?",
+        name: 'newFirst',
+    },
+    { 
+        type: "input",
+        message: "What is the employee's last name?",
+        name: 'newLast',
+    },
+    { 
+        type: "list",
+        message: "What is the employee's role?",
+        name: 'newRole',
+        choices: [employeeRoles]
+    },
+    { 
+        type: "list",
+        message: "Who is the employee's manager",
+        name: 'newManager',
+        choices: [currentManagers]
+    }
+];
+
+const updateEmployeeRolePrompts =[
+    { 
+        type: "list",
+        message: "Which employee's role do you want to update?",
+        name: 'updateEmployee',
+        choices: [allCurrentEmployees]
+    },
+    {
+        type: "list",
+        message: "Which role do you want to assign the selected employee?",
+        name: 'roleReassignment',
+        choices: [employeeRoles]
+    }
+];
+
+const addNewRolePrompt = [
+    { 
+        type: "input",
+        message: "What is name of the role?",
+        name: 'newRole',
+    },
+    { 
+        type: "input",
+        message: "What is the salary of the role?",
+        name: 'newRoleSalary',
+    },
+    { 
+        type: "input",
+        message: "What department does the role belong to?",
+        name: 'newRoleDepartment',
+        choices: [employeeDepartments]
+    },
+];
+
+const addDepartmentPrompt = [
+    { 
+        type: "input",
+        message: "What is the name of the department?",
+        name: 'newDepartment',
+    }
+];
+
 
 // Add employee
 function addEmployee(){
-
-}
+    inquirer
+        .prompt(addNewEmployeePrompts)
+        .then((res) => {
+            db.query(`INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES ("${}", "${}", "${}", "${}");`, (err, results) => {
+                if (err) {
+                    console.log(err);
+                } else {
+                    console.log('New employee added!');
+                }
+            });
+            reset();
+    });
+};
 
 // Update employee role
 function updateEmployeeRole(){
 
-}
+};
 
 // View all roles
 function viewRoles() {
@@ -86,13 +206,13 @@ function viewRoles() {
             console.table(results);
         }
     })
-}
+};
 
 
 // Add a role
 function addRole() {
 
-}
+};
 
 // View all departments
 function viewDepartments() {
@@ -103,35 +223,25 @@ function viewDepartments() {
             console.table(results);
         }
     })
-}
+};
 
 // Add a department 
 function addDepartment() {
 
+};
+
+
+
+function reset() {
+    inquirer.prompt([
+        {
+            type: "input",
+            mesage: "",
+            name: "*"
+        }
+    ]).then(() => {
+        initialQuestions();
+    })
 }
 
-
-
-
-
-const addRoleQuestions = [
-    'What is the name of the role?',
-    'What is the salary for the role?',
-    'What is the department for the role?'
-];
-
-const addEmployeeQuestions = [
-   "What is the employee's first name?",
-   "What is the employee's last name?",
-   "What is the employee's role?",
-   "What is the employee's manager?",
-];
-
-
-
-
-
-// WHEN I choose to add a department
-// THEN I am prompted to enter the name of the department and that department is added to the database
-// WHEN I choose to update an employee role
-// THEN I am prompted to select an employee to update and their new role and this information is updated in the database
+init();
