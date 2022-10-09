@@ -1,6 +1,24 @@
 const inquirer = require('inquirer');
 const mysql = require('mysql2');
-const consoleTable = require('cconsole.table');
+const consoleTable = require('console.table');
+
+const db = mysql.createConnection({
+    host: 'localhost',
+    user: 'root',
+    password: 'password123',
+    database: 'employee_tracker'
+    },
+    console.log('Connected to employee_tracker database.')
+);
+
+db.query('SELECT * FROM role', (err, results) => {
+    if (err) {
+        console.log(err);
+    } else {
+        console.table(results);
+    }
+})
+
 
 
 
@@ -22,7 +40,7 @@ function initialQuestions() {
             ]
         }
     ]).then((res) => {
-        
+
     })
 }
 
