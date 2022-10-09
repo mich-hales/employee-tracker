@@ -2,6 +2,7 @@ const inquirer = require('inquirer');
 const mysql = require('mysql2');
 const consoleTable = require('console.table');
 
+// Database conneection
 const db = mysql.createConnection({
     host: 'localhost',
     user: 'root',
@@ -11,17 +12,8 @@ const db = mysql.createConnection({
     console.log('Connected to employee_tracker database.')
 );
 
-db.query('SELECT * FROM role', (err, results) => {
-    if (err) {
-        console.log(err);
-    } else {
-        console.table(results);
-    }
-})
 
-
-
-
+// Initial questions to prompt all options
 function initialQuestions() {
     inquirer.prompt([
         {
@@ -29,20 +21,97 @@ function initialQuestions() {
             message: "What would you like to do?",
             name: "choice",
             choices: [
-                'View all departments', 
-                'View all roles', 
-                'View all employees', 
-                'Add a department', 
-                'Add a role', 
-                'Add an employee',
-                'Update an employee role',
+                'View All Employees', 
+                'Add Employee',
+                'Update Employee Role',
+                'View All Roles', 
+                'Add Role', 
+                'View All Departments', 
+                'Add Department', 
                 'Quit',
             ]
         }
     ]).then((res) => {
-
+        switch (res.choice) {
+            case 'View All Employees': viewEmployees();
+                break;
+            case 'Add Employee': addEmployee();
+                break;
+            case 'Update Employee Role': updateEmployeeRole();
+                break;
+            case 'View All Roles': viewRoles();
+                break;
+            case 'Add Role': addRole();
+                break;
+            case 'View All Departments': viewDepartments();
+                break;
+            case 'Add Department': addDepartment();
+                break;
+            case 'Quit': process.exit(0);
+                break;
+            default:
+                break;
+        }
     })
 }
+
+// View all employees
+function viewEmployees() {
+    db.query('SELECT * FROM employee', (err, results) => {
+        if (err) {
+            console.log(err);
+        } else {
+            console.table(results);
+        }
+    })
+    
+}
+
+// Add employee
+function addEmployee(){
+
+}
+
+// Update employee role
+function updateEmployeeRole(){
+
+}
+
+// View all roles
+function viewRoles() {
+    db.query('SELECT * FROM role', (err, results) => {
+        if (err) {
+            console.log(err);
+        } else {
+            console.table(results);
+        }
+    })
+}
+
+
+// Add a role
+function addRole() {
+
+}
+
+// View all departments
+function viewDepartments() {
+    db.query('SELECT * FROM departmeent', (err, results) => {
+        if (err) {
+            console.log(err);
+        } else {
+            console.table(results);
+        }
+    })
+}
+
+// Add a department 
+function addDepartment() {
+
+}
+
+
+
 
 
 const addRoleQuestions = [
