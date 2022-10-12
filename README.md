@@ -22,18 +22,13 @@ This is a command-line application used to manage a company's employee database,
 
 ## Mock-Up
 
-
-Because this application won’t be deployed, you’ll also need to create a walkthrough video that demonstrates its functionality and all of the following acceptance criteria being met. You’ll need to submit a link to the video and add it to the README of your project.
-
-
-
 The following image shows a mock-up of the application being used from the command line:
 
 ![A screenshot showing the command-line employee management application](./Assets/thumbnail.png)
 
 The following video shows an example of the application being used from the command line: 
 
-
+https://user-images.githubusercontent.com/107455470/195444862-abd159b6-b3f5-48bc-8c86-5a413ecca56c.mp4
 
 Project repository: https://github.com/mich-hales/employee-tracker
 
