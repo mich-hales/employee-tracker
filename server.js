@@ -1,7 +1,6 @@
 const mysql = require('mysql2');
 const inquirer = require('inquirer');
 const consoleTable = require('console.table');
-// const Connection = require('mysql2/typings/mysql/lib/Connection');
 let roles;
 let departments;
 let managers;
@@ -17,12 +16,17 @@ const db = mysql.createConnection({
     console.log('Connected to employee_tracker database.')
 );
 
-function init() {
+db.connect((err) => {
+    if (err) throw err;
     initialQuestions();
-};
+    currentDepartments();
+    currentRoles();
+    currentManagers();
+    currentEmployees();
+})
 
 // Initial questions to prompt all options
-function initialQuestions() {
+initialQuestions = () => {
     inquirer.prompt([
         {
             type: "list",
@@ -55,9 +59,9 @@ function initialQuestions() {
                 break;
             case 'Add Department': addDepartment();
                 break;
-            case 'Quit': process.exit(0);
+            case 'Quit': db.end();
                 break;
-            default:
+            default: db.end();
                 break;
         }
     })
@@ -96,14 +100,18 @@ currentEmployees = () => {
 
 // Add employee
 function addEmployee(){
-    currentManagers();
     currentRoles();
+    currentManagers();
 
     let roleOptions = [];
+    for (i = 0; i < roles.length; i++) {
+        roleOptions.push(Object(roles[i]));
+    }
+
+    let managerOptions = [];
     for (i = 0; i < managers.length; i++) {
         managerOptions.push(Object(managers[i]));
     }
-
 
     inquirer
         .prompt([
@@ -159,11 +167,10 @@ function addEmployee(){
                 if (err) {
                     console.log(err);
                 } else {
-                    // allCurrentEmployees.push(results);
                     console.log('New employee added!');
                 }
             });
-            getEmployees();
+            currentEmployees();
             initialQuestions();
     });
 };
@@ -193,11 +200,10 @@ function addRole() {
                 name: 'department_id',
                 choices: departmentOptions
             }
-        ]
-           )
+        ])
         .then((res) => {
             for (i = 0; i < departmentOptions.length; i++) {
-                if (departmentOptions[i].name === answer.department_id) {
+                if (departmentOptions[i].name === res.department_id) {
                     department_id = departmentOptions[i].id
                 }
             }
@@ -206,7 +212,6 @@ function addRole() {
                 if (err) {
                     console.log(err);
                 } else {
-                    // employeeRoles.push(results);
                     console.log("New role added!");
                 }
             });
@@ -215,8 +220,6 @@ function addRole() {
         });
 };
 
-
-
 // Add a department 
 function addDepartment() {
     inquirer
@@ -224,10 +227,10 @@ function addDepartment() {
         { 
         type: "input",
         message: "What is the name of the department?",
-        name: 'newDepartment',
+        name: 'department',
     })
     .then((res) => {
-        db.query(`INSERT INTO department (name) VALUES ("${res.newDepartment}")`, (err, results) => {
+        db.query(`INSERT INTO department (name) VALUES ("${res.department}")`, (err, results) => {
             if (err) {
                 console.log(err);
             } else {
@@ -282,8 +285,8 @@ function updateEmployeeRole(){
 
     let employeeOptions = [];
 
-    for (let i = 0; i < allCurrentEmployees.length; i++) {
-        employeeOptions.push(Object(allCurrentEmployees[i]));
+    for (let i = 0; i < employees.length; i++) {
+        employeeOptions.push(Object(employees[i]));
     };
 
     inquirer
@@ -342,6 +345,3 @@ function updateEmployeeRole(){
         });
 };
 
-
-
-init();
