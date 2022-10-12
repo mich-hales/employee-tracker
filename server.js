@@ -56,19 +56,46 @@ function initialQuestions() {
                 break;
         }
     })
-}
+};
+
 
 // View all employees
 function viewEmployees() {
-    db.query('SELECT * FROM employee', (err, results) => {
+    db.query(`SELECT x.id, x.first_name "First Name", x.last_name "Last Name", title Title, salary Salary, name Position, y.first_name "Manager First Name", y.last_name "Manager Last Name" from employee as x join role on x.role_id = role.id join department on role.department_id = department.id join employee as y on x.manager_id = y.id`, (err, results) => {
         if (err) {
             console.log(err);
         } else {
             console.table(results);
         }
-    })
-    
+    });
+    initialQuestions();
 };
+
+// View all roles
+function viewRoles() {
+    db.query('SELECT * FROM role', (err, results) => {
+        if (err) {
+            console.log(err);
+        } else {
+            console.table(results);
+        }
+    });
+    initialQuestions();
+};
+
+// View all departments
+function viewDepartments() {
+    db.query('SELECT * FROM departmeent', (err, results) => {
+        if (err) {
+            console.log(err);
+        } else {
+            console.table(results);
+        }
+    });
+    initialQuestions();
+};
+
+
 
 // Arrays for current data
 const employeeRoles = [
@@ -133,22 +160,7 @@ const addNewEmployeePrompts = [
     }
 ];
 
-const updateEmployeeRolePrompts =[
-    { 
-        type: "list",
-        message: "Which employee's role do you want to update?",
-        name: 'updateEmployee',
-        choices: [allCurrentEmployees]
-    },
-    {
-        type: "list",
-        message: "Which role do you want to assign the selected employee?",
-        name: 'roleReassignment',
-        choices: [employeeRoles]
-    }
-];
-
-const addNewRolePrompt = [
+const addNewRolePrompts = [
     { 
         type: "input",
         message: "What is name of the role?",
@@ -175,73 +187,97 @@ const addDepartmentPrompt = [
     }
 ];
 
+const updateEmployeeRolePrompts =[
+    { 
+        type: "list",
+        message: "Which employee's role do you want to update?",
+        name: 'updateEmployee',
+        choices: [allCurrentEmployees]
+    },
+    {
+        type: "list",
+        message: "Which role do you want to assign the selected employee?",
+        name: 'roleReassignment',
+        choices: [employeeRoles]
+    }
+];
+
+// Update employee role
+function updateEmployeeRole(){
+
+    let employeeOptions = [];
+
+    for (let i = 0; i < allCurrentEmployees.length; i++) {
+        employeeOptions.push(Object(allCurrentEmployees[i]));
+    };
+
+    inquirer
+        .prompt(updateEmployeeRolePrompts)
+        .then((res) => {
+            db.query(`UPDATE employee SET role_id = ${res.roleReassignment} WHERE id = ${}`, (err, results) => {
+                if (err) {
+                    console.log(err);
+                } else {
+                    console.log('Employee role updated!');
+                }
+            });
+            initialQuestions();
+        });
+};
 
 // Add employee
 function addEmployee(){
     inquirer
         .prompt(addNewEmployeePrompts)
         .then((res) => {
-            db.query(`INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES ("${}", "${}", "${}", "${}");`, (err, results) => {
+            db.query(`INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES ("${res.newFirst}", "${res.newLast}", "${res.newRole}", "${res.newManager}");`, (err, results) => {
                 if (err) {
                     console.log(err);
                 } else {
+                    allCurrentEmployees.push(results);
                     console.log('New employee added!');
                 }
             });
-            reset();
+            initialQuestions();
     });
-};
-
-// Update employee role
-function updateEmployeeRole(){
-
-};
-
-// View all roles
-function viewRoles() {
-    db.query('SELECT * FROM role', (err, results) => {
-        if (err) {
-            console.log(err);
-        } else {
-            console.table(results);
-        }
-    })
 };
 
 
 // Add a role
 function addRole() {
-
+    inquirer
+        .prompt(addNewRolePrompts)
+        .then((res) => {
+            db.query(`INSERT INTO role (title, salary, department_id) VALUES ("${res.newRole}", "${res.newRoleSalary}", "${res.newRoleDepartment}")`, (err, results) => {
+                if (err) {
+                    console.log(err);
+                } else {
+                    employeeRoles.push(results);
+                    console.log("New role added!");
+                }
+            });
+            initialQuestions();
+        });
 };
 
-// View all departments
-function viewDepartments() {
-    db.query('SELECT * FROM departmeent', (err, results) => {
-        if (err) {
-            console.log(err);
-        } else {
-            console.table(results);
-        }
-    })
-};
+
 
 // Add a department 
 function addDepartment() {
-
+    inquirer
+    .prompt(addDepartmentPrompt)
+    .then((res) => {
+        db.query(`INSERT INTO department (name) VALUES ("${res.newDepartment}")`, (err, results) => {
+            if (err) {
+                console.log(err);
+            } else {
+                employeeDepartments.push(results);
+                console.log("New role added!");
+            }
+        });
+        initialQuestions();
+    });
 };
 
-
-
-function reset() {
-    inquirer.prompt([
-        {
-            type: "input",
-            mesage: "",
-            name: "*"
-        }
-    ]).then(() => {
-        initialQuestions();
-    })
-}
 
 init();
