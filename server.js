@@ -208,7 +208,7 @@ function addRole() {
                 }
             }
 
-            db.query(`INSERT INTO role (title, salary, department_id) VALUES ("${res.title}", "${res.salary}", "${res.department_id}")`, (err, result) => {
+            db.query(`INSERT INTO role (title, salary, department_id) VALUES ("${res.title}", "${res.salary}", ${department_id})`, (err, result) => {
                 if (err) {
                     console.log(err);
                 } else {
