@@ -167,7 +167,7 @@ function addEmployee(){
                 if (err) {
                     console.log(err);
                 } else {
-                    console.log('New employee added: ' + result.first_name + ' ' + result.last_name);
+                    console.log('New employee added: ' + res.first_name + ' ' + res.last_name);
                     currentEmployees();
                     initialQuestions();
                 }
@@ -212,7 +212,7 @@ function addRole() {
                 if (err) {
                     console.log(err);
                 } else {
-                    console.log("New role added: " + result.title);
+                    console.log("New role added: " + res.title);
                     currentRoles();
                     initialQuestions();
                 }
@@ -234,7 +234,7 @@ function addDepartment() {
             if (err) {
                 console.log(err);
             } else {
-                console.log("New department added: " + result.department);
+                console.log("New department added: " + res.department);
                 currentDepartments();
                 initialQuestions();
             }
