@@ -195,7 +195,7 @@ function addRole() {
                 name: 'salary',
             },
             { 
-                type: "input",
+                type: "list",
                 message: "What department does the role belong to?",
                 name: 'department_id',
                 choices: departmentOptions
