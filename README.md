@@ -7,7 +7,7 @@ This is a command-line application used to manage a company's employee database,
 ## Installation
 * To install the application, the user needs to install node.js and run `npm install` from the cloned repository.
 
-## Usage
+## **Usage**
 
 * This is a command-line application that accepts user input.
 * To start the application, run  `npm start` in the terminal.
@@ -22,7 +22,7 @@ This is a command-line application used to manage a company's employee database,
 
 ## Mock-Up
 
-The following image shows a mock-up of the application being used from the command line:
+The following image shows a preview of the application being used:
 
 ![A screenshot showing the command-line employee management application](./Assets/thumbnail.png)
 
