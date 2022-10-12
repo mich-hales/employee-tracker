@@ -19,8 +19,8 @@ const db = mysql.createConnection({
 db.connect((err) => {
     if (err) throw err;
     initialQuestions();
-    currentDepartments();
     currentRoles();
+    currentDepartments();
     currentManagers();
     currentEmployees();
 })
@@ -90,7 +90,7 @@ currentManagers = () => {
 }
 
 currentEmployees = () => {
-    db.query("SELECT id, CONCAT_WS(' ', first_name, last_name) AS Employee_Name FROM employee", (err, result) => {
+    db.query("SELECT id, CONCAT_WS(' ', first_name, last_name) AS employee_name FROM employee", (err, result) => {
         if (err) throw err;
         employees = result;
     })
@@ -163,15 +163,15 @@ function addEmployee(){
                 }
             }
 
-            db.query(`INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES ("${res.first_name}", "${res.last_name}", "${res.role_id}", "${res.manager_id}");`, (err, results) => {
+            db.query(`INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES ("${res.first_name}", "${res.last_name}", ${role_id}, ${manager_id})`, (err, result) => {
                 if (err) {
                     console.log(err);
                 } else {
-                    console.log('New employee added!');
+                    console.log('New employee added: ' + result.first_name + ' ' + result.last_name);
+                    currentEmployees();
+                    initialQuestions();
                 }
             });
-            currentEmployees();
-            initialQuestions();
     });
 };
 
@@ -208,15 +208,15 @@ function addRole() {
                 }
             }
 
-            db.query(`INSERT INTO role (title, salary, department_id) VALUES ("${res.title}", "${res.salary}", "${res.department_id}")`, (err, results) => {
+            db.query(`INSERT INTO role (title, salary, department_id) VALUES ("${res.title}", "${res.salary}", "${res.department_id}")`, (err, result) => {
                 if (err) {
                     console.log(err);
                 } else {
-                    console.log("New role added!");
+                    console.log("New role added: " + result.title);
+                    currentRoles();
+                    initialQuestions();
                 }
             });
-            currentRoles();
-            initialQuestions();
         });
 };
 
@@ -230,16 +230,15 @@ function addDepartment() {
         name: 'department',
     })
     .then((res) => {
-        db.query(`INSERT INTO department (name) VALUES ("${res.department}")`, (err, results) => {
+        db.query(`INSERT INTO department (name) VALUES ("${res.department}")`, (err, result) => {
             if (err) {
                 console.log(err);
             } else {
-                // employeeDepartments.push(results);
-                console.log("New role added!");
+                console.log("New department added: " + result.department);
+                currentDepartments();
+                initialQuestions();
             }
         });
-        currentDepartments();
-        initialQuestions();
     });
 };
 
@@ -251,38 +250,37 @@ function viewEmployees() {
             console.log(err);
         } else {
             console.table(results);
+            initialQuestions();
         }
     });
-    initialQuestions();
 };
 
 // View all roles
 function viewRoles() {
-    db.query('SELECT * FROM role', (err, results) => {
+    db.query('SELECT r.id, r.title, r.salary, d.name as department_name FROM role as r INNER JOIN department as d ON r.department_id = d.id', (err, results) => {
         if (err) {
             console.log(err);
         } else {
             console.table(results);
+            initialQuestions();
         }
     });
-    initialQuestions();
 };
 
 // View all departments
 function viewDepartments() {
-    db.query('SELECT * FROM departmeent', (err, results) => {
+    db.query('SELECT * FROM department', (err, result) => {
         if (err) {
             console.log(err);
         } else {
-            console.table(results);
+            console.table(result);
+            initialQuestions();
         }
     });
-    initialQuestions();
 };
 
 // Update employee role
 function updateEmployeeRole(){
-
     let employeeOptions = [];
 
     for (let i = 0; i < employees.length; i++) {
@@ -298,7 +296,7 @@ function updateEmployeeRole(){
                 choices: function () {
                     var choiceArray = [];
                     for (var i = 0; i < employeeOptions.length; i++) {
-                        choiceArray.push(employeeOptions[i].Employee_Name);
+                        choiceArray.push(employeeOptions[i].employee_name);
                     }
                     return choiceArray;
                 }
@@ -312,7 +310,7 @@ function updateEmployeeRole(){
             };
 
             for (i = 0; i < employeeOptions.length; i++) {
-                if (employeeOptions[i].Employee_Name === res.updateRole) {
+                if (employeeOptions[i].employee_name === res.updateEmployee) {
                     employeeSelected = employeeOptions[i].id
                 }
             }
@@ -329,7 +327,8 @@ function updateEmployeeRole(){
                         return choiceArray;
                     }
                 }
-            ]).then(res => {
+            ])
+            .then(res => {
                 for (i = 0; i < roleOptions.length; i++) {
                     if (res.roleReassignment === roleOptions[i].title) {
                         newChoice = roleOptions[i].id
@@ -338,10 +337,10 @@ function updateEmployeeRole(){
                         })
                     }
                 }
-            })
-            currentEmployees();
-            currentRoles();
-            initialQuestions();
+                currentEmployees();
+                currentRoles();
+                initialQuestions();
+            });
         });
 };
 
