@@ -44,6 +44,7 @@ initialQuestions = () => {
             ]
         }
     ]).then((res) => {
+        // Directs user to next function which provides next steps/questions to move forward 
         switch (res.choice) {
             case 'View All Employees': viewEmployees();
                 break;
@@ -67,7 +68,7 @@ initialQuestions = () => {
     })
 };
 
-
+// provides the current roles and adds to the global roles variable
 currentRoles = () => {
     db.query("SELECT id, title FROM role", (err, result) => {
         if (err) throw err;
@@ -75,6 +76,7 @@ currentRoles = () => {
     })
 }
 
+// provides the current departments and adds to the global departments variable
 currentDepartments = () => {
     db.query("SELECT id, name FROM department", (err, result) => {
         if (err) throw err;
@@ -82,6 +84,7 @@ currentDepartments = () => {
     })
 }
 
+// provides the current managers and adds to the global managers variable
 currentManagers = () => {
     db.query("SELECT id, first_name, last_name, CONCAT_WS(' ', first_name, last_name) AS managers FROM employee", (err, result) => {
         if (err) throw err;
@@ -89,6 +92,7 @@ currentManagers = () => {
     })
 }
 
+// provides the current employees and adds to the global employees variable
 currentEmployees = () => {
     db.query("SELECT id, CONCAT_WS(' ', first_name, last_name) AS employee_name FROM employee", (err, result) => {
         if (err) throw err;
@@ -98,7 +102,7 @@ currentEmployees = () => {
 }
 
 
-// Add employee
+// function to add an employee
 function addEmployee(){
     currentRoles();
     currentManagers();
@@ -113,6 +117,7 @@ function addEmployee(){
         managerOptions.push(Object(managers[i]));
     }
 
+    // prompts for adding an employee
     inquirer
         .prompt([
             { 
@@ -163,6 +168,7 @@ function addEmployee(){
                 }
             }
 
+            // adding data properly to the table
             db.query(`INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES ("${res.first_name}", "${res.last_name}", ${role_id}, ${manager_id})`, (err, result) => {
                 if (err) {
                     console.log(err);
@@ -175,13 +181,14 @@ function addEmployee(){
     });
 };
 
-// Add a role
+// function to add a role
 function addRole() {
     let departmentOptions = [];
     for (i = 0; i < departments.length; i++) {
         departmentOptions.push(Object(departments[i]));
     };
 
+    // prompts for adding a role
     inquirer
         .prompt([
             { 
@@ -208,6 +215,7 @@ function addRole() {
                 }
             }
 
+            // adding data properly to the table
             db.query(`INSERT INTO role (title, salary, department_id) VALUES ("${res.title}", "${res.salary}", ${department_id})`, (err, result) => {
                 if (err) {
                     console.log(err);
@@ -220,7 +228,7 @@ function addRole() {
         });
 };
 
-// Add a department 
+// function to add a department 
 function addDepartment() {
     inquirer
     .prompt(
@@ -230,6 +238,7 @@ function addDepartment() {
         name: 'department',
     })
     .then((res) => {
+        // adding data properly to the table
         db.query(`INSERT INTO department (name) VALUES ("${res.department}")`, (err, result) => {
             if (err) {
                 console.log(err);
@@ -243,7 +252,7 @@ function addDepartment() {
 };
 
 
-// View all employees
+// function to view all employees
 function viewEmployees() {
     db.query(`SELECT x.id, x.first_name "First Name", x.last_name "Last Name", title Title, salary Salary, name Position, y.first_name "Manager First Name", y.last_name "Manager Last Name" from employee as x join role on x.role_id = role.id join department on role.department_id = department.id join employee as y on x.manager_id = y.id`, (err, results) => {
         if (err) {
@@ -255,7 +264,7 @@ function viewEmployees() {
     });
 };
 
-// View all roles
+// function to view all roles
 function viewRoles() {
     db.query('SELECT r.id, r.title, r.salary, d.name as department_name FROM role as r INNER JOIN department as d ON r.department_id = d.id', (err, results) => {
         if (err) {
@@ -267,7 +276,7 @@ function viewRoles() {
     });
 };
 
-// View all departments
+// function to view all departments
 function viewDepartments() {
     db.query('SELECT * FROM department', (err, result) => {
         if (err) {
@@ -279,7 +288,7 @@ function viewDepartments() {
     });
 };
 
-// Update employee role
+// functin to oupdate employee's role
 function updateEmployeeRole(){
     let employeeOptions = [];
 
