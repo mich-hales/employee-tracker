@@ -4,6 +4,9 @@
 
 This is a command-line application used to manage a company's employee database, using Node.js, Inquirer, and MySQL. This app will easily provide the ability to manage the departments, roles, and employees of a company in order to organize and plan around the business. 
 
+## Installation
+* To install the application, the user needs to install node.js and run `npm install` from the cloned repository.
+
 ## Usage
 
 * This is a command-line application that accepts user input.
@@ -24,42 +27,13 @@ Because this application won’t be deployed, you’ll also need to create a wal
 
 
 
-The following video shows an example of the application being used from the command line:
+The following image shows a mock-up of the application being used from the command line:
 
-[![A video thumbnail shows the command-line employee management application with a play button overlaying the view.](./Assets/12-sql-homework-video-thumbnail.png)](https://2u-20.wistia.com/medias/2lnle7xnpk)
+![A screenshot showing the command-line employee management application](./Assets/thumbnail.png)
+
+The following video shows an example of the application being used from the command line: 
+
 
 
 Project repository: https://github.com/mich-hales/employee-tracker
-
-
-### Walkthrough Video: 27%
-
-* A walkthrough video that demonstrates the functionality of the employee tracker must be submitted, and a link to the video should be included in your README file.
-
-* The walkthrough video must show all of the technical acceptance criteria being met.
-
-* The walkthrough video must demonstrate how a user would invoke the application from the command line.
-
-* The walkthrough video must demonstrate a functional menu with the options outlined in the acceptance criteria.
-
-### Technical Acceptance Criteria: 40%
-
-* Satisfies all of the preceding acceptance criteria plus the following:
-
-    * Uses the [Inquirer package](https://www.npmjs.com/package/inquirer/v/8.2.4).
-
-    * Uses the [MySQL2 package](https://www.npmjs.com/package/mysql2) to connect to a MySQL database.
-
-    * Uses the [console.table package](https://www.npmjs.com/package/console.table) to print MySQL rows to the console.
-
-* Follows the table schema outlined in the Challenge instructions.
-
-
-## Review
-
-You are required to submit BOTH of the following for review:
-
-* A walkthrough video demonstrating the functionality of the application.
-
-* The URL of the GitHub repository, with a unique name and a README describing the project.
 
